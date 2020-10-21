@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
+import Header from './components/Header';
+import Spinner from './components/Spinner';
 
 export default function App() {
     const [candidates, setCandidates] = useState([]);
 
-    let interval = null;
-
     useEffect(() => {
-        interval = setInterval(() => {
+        setInterval(() => {
             fetch("http://localhost:8080/votes")
                 .then(res => {
                     return res.json()
@@ -18,21 +18,12 @@ export default function App() {
 
     if (candidates.length === 0) {
         return (
-            <div className="preloader-wrapper big active">
-                <div className="spinner-layer spinner-blue-only">
-                    <div className="circle-clipper left">
-                        <div className="circle"></div>
-                    </div><div className="gap-patch">
-                        <div className="circle"></div>
-                    </div><div className="circle-clipper right">
-                        <div className="circle"></div>
-                    </div>
-                </div>
-            </div>
+            <Spinner description="Carregando..." />
         );
     }
     return (
         <div>
+            <Header>Votação</Header>
             {candidates.map(({ id, name, votes }) => {
                 return (
                     <p key={id}>
