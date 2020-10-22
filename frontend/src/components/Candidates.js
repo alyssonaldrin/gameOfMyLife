@@ -1,5 +1,5 @@
 import React from 'react'
-import Candidate from '../Candidate';
+import Candidate from './Candidate';
 import Card from './Card';
 
 export default function Candidates({ candidates }) {
