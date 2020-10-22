@@ -1,31 +1,93 @@
-import React, { useEffect, useState } from 'react'
+import React, { Component } from 'react'
 import Candidates from './components/Candidates';
 import Header from './components/Header';
 import Spinner from './components/Spinner';
 
-export default function App() {
-    const [candidates, setCandidates] = useState([]);
+export default class App extends Component {
+    constructor() {
+        super();
 
-    useEffect(() => {
-        setInterval(() => {
+        this.state = {
+            candidates: [],
+            previousVotes: [],
+            previousPercentages: [],
+        }
+
+        this.interval = null;
+    }
+
+    componentDidMount() {
+        this.interval = setInterval(() => {
             fetch("http://localhost:8080/votes")
                 .then(res => {
                     return res.json()
-                }).then(json => {
-                    setCandidates(json.candidates);
+                })
+                .then(json => {
+                    const previousVotes = this.state.candidates.map(({ id, votes }) => {
+                        return { id, votes }
+                    });
+                    const previousPercentages = this.state.candidates.map(({ id, percentage }) => {
+                        return { id, percentage }
+                    });
+
+                    this.setState({
+                        candidates: json.candidates,
+                        previousVotes,
+                        previousPercentages,
+                    })
                 })
         }, 1000);
-    }, [])
-
-    if (candidates.length === 0) {
-        return (
-            <Spinner description="Carregando..." />
-        );
     }
-    return (
-        <div className="container">
-            <Header>Votação</Header>
-            <Candidates candidates={candidates} />
-        </div>
-    )
+
+    render() {
+        const {candidates, previousVotes, previousPercentages} = this.state;
+
+        if (candidates.length === 0) {
+            return (
+                <Spinner description="Carregando..." />
+            );
+        }
+        return (
+            <div className="container">
+                <Header>Votação</Header>
+                <Candidates previousPercentages={previousPercentages} previousVotes={previousVotes} candidates={candidates} />
+            </div>
+        )
+    }
 }
+
+
+    // export default function App() {
+    //     const [candidates, setCandidates] = useState([]);
+    //     const [previousVotes, setPreviousVotes] = useState([]);
+
+    //     useEffect(() => {
+    //         setInterval(() => {
+    //             fetch("http://localhost:8080/votes")
+    //                 .then(res => {
+    //                     return res.json()
+    //                 })
+    //                 .then(json => {
+    //                     setPreviousVotes(candidates.map(({id, votes}) => {
+    //                         return {
+    //                             id, 
+    //                             votes,
+    //                         }
+    //                     }));
+    //                     setCandidates(json.candidates);
+    //                 })
+    //         }, 1000);
+    //     }, [])
+
+//     if(candidates.length === 0) {
+//     return (
+//         <Spinner description="Carregando..." />
+//     );
+// }
+// return (
+//     <div className="container">
+//         <Header>Votação</Header>
+//         <Candidates previousVotes={previousVotes} candidates={candidates} />
+//     </div>
+// )
+// }
