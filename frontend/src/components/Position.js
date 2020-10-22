@@ -1,7 +1,8 @@
-import React from 'react'
+import React from 'react';
+import css from "./position.module.css";
 
 export default function Position({ children }) {
     return (
-        <div>{children}</div>
+        <div className={css.position}>{children}</div>
     )
 }

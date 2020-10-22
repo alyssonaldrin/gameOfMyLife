@@ -10,7 +10,7 @@ export default function Popularity({value}) {
     const fullStars = STARTS.full.repeat(value);
     const emptyStars = STARTS.empty.repeat(MAX_STARS - value);
     return (
-        <div>
+        <div style={{fontSize: "1.5rem",color: "#f39c12"}}>
             {fullStars}{emptyStars}
         </div>
     )
